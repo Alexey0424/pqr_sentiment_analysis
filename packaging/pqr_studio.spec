@@ -11,7 +11,7 @@ datas += [
 
 a = Analysis(
     ["launcher.py"],
-    pathex=[".."],
+    pathex=["..", "../src"],
     binaries=[],
     datas=datas,
     hiddenimports=[],
