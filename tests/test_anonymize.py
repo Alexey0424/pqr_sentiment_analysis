@@ -82,15 +82,15 @@ class TestTermRules:
         assert clean.endswith("[EMPRESA]")
 
     def test_regex_term_rule(self):
-        rules = [TermRule(pattern=r"Consorcio\s+\w+", replacement="[CONTRATISTA]", regex=True)]
-        clean, _ = scrub_text("El Consorcio Andino ejecuta la obra", rules)
-        assert "Consorcio" not in clean
+        rules = [TermRule(pattern=r"Grupo\s+\w+", replacement="[CONTRATISTA]", regex=True)]
+        clean, _ = scrub_text("El Grupo Andino ejecuta la obra", rules)
+        assert "Grupo" not in clean
         assert "[CONTRATISTA]" in clean
 
     def test_accented_variants_of_literal_are_masked(self):
-        rules = [TermRule(pattern="Corbatán", replacement="[ORGANIZACION]")]
-        clean, _ = scrub_text("La corporacion Corbatan y Corbatán", rules)
-        assert "orbat" not in clean
+        rules = [TermRule(pattern="Andrés Beltrán", replacement="[NOMBRE]")]
+        clean, _ = scrub_text("Atendido por Andres Beltran, es decir Andrés Beltrán", rules)
+        assert "eltr" not in clean
 
     def test_scrub_is_idempotent_on_placeholders(self):
         rules = [TermRule(pattern="Acme", replacement="[EMPRESA]")]
@@ -113,7 +113,7 @@ class TestSeriesAndConfig:
         payload = {
             "terms": [
                 {"pattern": "Acme", "replacement": "[EMPRESA]"},
-                {"pattern": "Consorcio\\s+\\w+", "replacement": "[CONTRATISTA]", "regex": True},
+                {"pattern": "Grupo\\s+\\w+", "replacement": "[CONTRATISTA]", "regex": True},
             ]
         }
         path = tmp_path / "terms.json"

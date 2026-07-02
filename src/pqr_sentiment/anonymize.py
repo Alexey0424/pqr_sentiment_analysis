@@ -40,7 +40,7 @@ class TermRule:
 
 
 # Literal terms are matched case insensitively and accent insensitively so a
-# single entry covers spelling variants like "Corbatan" and "Corbatán".
+# single entry covers spelling variants like "Andres" and "Andrés".
 _ACCENT_CLASSES = {"a": "[aá]", "e": "[eé]", "i": "[ií]", "o": "[oó]", "u": "[uúü]", "n": "[nñ]"}
 
 
