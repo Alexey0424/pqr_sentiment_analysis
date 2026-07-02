@@ -39,6 +39,24 @@ class TestBuiltinPatterns:
         assert "TMX" not in clean
         assert "[PLACA]" in clean
 
+    def test_lowercase_and_dashed_plates_are_masked(self):
+        clean, _ = scrub_text("el vehiculo wcu315 y el camion de placas WCU – 315", [])
+        assert "wcu" not in clean.lower()
+        assert clean.count("[PLACA]") == 2
+
+    def test_address_does_not_swallow_following_word(self):
+        clean, _ = scrub_text("zona verde ubicada en diagonal 45 con avenida 38, cerca", [])
+        assert "[DIRECCION] con [DIRECCION]" in clean
+
+    def test_lowercase_words_before_numbers_are_not_plates(self):
+        clean, _ = scrub_text("faltan aun 300 metros de red por instalar", [])
+        assert "aun 300 metros" in clean
+
+    def test_bare_house_number_is_masked(self):
+        clean, _ = scrub_text("la tapa de registro de la vecina esta inestable # 53-23 en la via", [])
+        assert "53-23" not in clean
+        assert "[DIRECCION]" in clean
+
     def test_year_is_not_masked_as_document(self):
         clean, _ = scrub_text("Sucedio en el 2018 durante las obras", [])
         assert "2018" in clean

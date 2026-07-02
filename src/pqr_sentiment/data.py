@@ -11,6 +11,7 @@ analysis never hides its preprocessing.
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -63,13 +64,18 @@ def parse_flexible_dates(series: pd.Series) -> pd.Series:
 
     text_mask = ~serial_mask & values.notna()
     if text_mask.any():
-        text = values[text_mask].astype(str).str.strip()
-        iso = pd.to_datetime(text, format="ISO8601", errors="coerce")
-        parsed.loc[text_mask] = iso
+        text = values[text_mask].astype(str).str.strip(" '\"\t")
+        parsed.loc[text_mask] = pd.to_datetime(text, format="ISO8601", errors="coerce")
         remaining = text_mask & parsed.isna()
         if remaining.any():
-            text = values[remaining].astype(str).str.strip()
-            parsed.loc[remaining] = pd.to_datetime(text, dayfirst=True, errors="coerce")
+            text = values[remaining].astype(str).str.strip(" '\"\t")
+            parsed.loc[remaining] = pd.to_datetime(text, format="%d/%m/%Y", errors="coerce")
+        remaining = text_mask & parsed.isna()
+        if remaining.any():
+            text = values[remaining].astype(str).str.strip(" '\"\t")
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", UserWarning)
+                parsed.loc[remaining] = pd.to_datetime(text, dayfirst=True, errors="coerce")
 
     return parsed.dt.normalize()
 

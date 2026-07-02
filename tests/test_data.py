@@ -148,6 +148,12 @@ class TestParseFlexibleDates:
         parsed = parse_flexible_dates(pd.Series(["43028"]))
         assert parsed[0] == pd.Timestamp("2017-10-20")
 
+    def test_stray_quotes_and_impossible_dates(self):
+        parsed = parse_flexible_dates(pd.Series(["14/11/2018 '", "31/02/2019", "Cerrada por [EMPRESA]"]))
+        assert parsed[0] == pd.Timestamp("2018-11-14")
+        assert pd.isna(parsed[1])
+        assert pd.isna(parsed[2])
+
 
 class TestCleanRecords:
     @pytest.fixture()
