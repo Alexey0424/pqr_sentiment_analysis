@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Editors
+.vscode/
+.idea/
+
+# Packaging artifacts
+*.spec.bak
+release/
+
+# Never commit confidential inputs or scrub configuration
+private/
+private_pipeline/
+sensitive_terms.json
+BD_Consolidada*
+*_raw.*
+
+# Local exports
+reports/exports/
+salidas_graficos/

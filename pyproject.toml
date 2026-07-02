@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pqr_sentiment"
+version = "1.0.0"
+description = "Sentiment and emotion analytics for PQR citizen feedback (petitions, complaints and claims) using Spanish transformer models"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Alexey David Velásquez Betancurt"}]
+keywords = ["sentiment analysis", "nlp", "bert", "spanish", "customer feedback"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+    "scipy>=1.11",
+    "scikit-learn>=1.3",
+    "openpyxl>=3.1",
+]
+
+[project.optional-dependencies]
+ml = [
+    "torch>=2.1",
+    "transformers>=4.40",
+    "pysentimiento>=0.7",
+]
+app = [
+    "customtkinter>=5.2",
+]
+dev = [
+    "pytest>=7.4",
+    "nbformat>=5.9",
+    "nbclient>=0.9",
+    "ipykernel>=6.25",
+]
+
+[project.scripts]
+pqr_studio = "pqr_sentiment.app.main:run"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
