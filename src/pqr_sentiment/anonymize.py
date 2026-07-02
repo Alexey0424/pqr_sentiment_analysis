@@ -64,15 +64,22 @@ BUILTIN_RULES: list[tuple[str, re.Pattern[str], str]] = [
     (
         "address",
         re.compile(
-            rf"\b{_ADDRESS_KEYWORDS}s?\.?\s{{0,2}}\d+\s?[a-z]{{0,2}}"
+            rf"\b{_ADDRESS_KEYWORDS}s?\.?\s{{0,2}}\d+(?:\s?[a-z]{{1,2}}\b)?"
             r"(?:\s?(?:#|no\.?|n°|nro\.?|num\.?)\s?\d+\s?[a-z]?(?:\s?-\s?\d+)?)?",
             re.IGNORECASE,
         ),
         "[DIRECCION]",
     ),
     (
+        "house_number",
+        re.compile(r"(?<!\w)#\s?\d+\s?-\s?\d+\b"),
+        "[DIRECCION]",
+    ),
+    (
         "plate",
-        re.compile(r"\b[A-Z]{3}\s?\d{3}\b"),
+        # Uppercase plates may carry separators, lowercase ones only match
+        # in compact form so ordinary words followed by numbers stay intact.
+        re.compile(r"\b(?:[A-Z]{3}\s?[–-]?\s?\d{3}|[a-z]{3}\d{3})\b"),
         "[PLACA]",
     ),
     (
