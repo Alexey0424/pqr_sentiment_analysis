@@ -134,7 +134,7 @@ pqr_sentiment_analysis/
 
 ## Built with
 
-Python 3.10+, pandas, matplotlib, scipy, scikit-learn, PyTorch, Hugging Face transformers, pysentimiento, CustomTkinter, pytest, GitHub Actions.
+Python 3.10+, pandas, matplotlib, scipy, `scikit-learn`, PyTorch, Hugging Face transformers, pysentimiento, CustomTkinter, pytest, GitHub Actions.
 
 ## License
 
