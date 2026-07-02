@@ -1,0 +1,9 @@
+{
+  "_comment": "Format documentation for the private term list used to anonymize the raw records. The real file stays outside version control. Literal patterns match case and accent insensitively on word boundaries, regex patterns are applied as written.",
+  "terms": [
+    {"pattern": "Acme Utilities", "replacement": "[EMPRESA]"},
+    {"pattern": "Consorcio\\s+Ejemplo(\\s+Norte)?", "replacement": "[CONTRATISTA]", "regex": true},
+    {"pattern": "Maria Ejemplo", "replacement": "[NOMBRE]"},
+    {"pattern": "Corporacion Ficticia", "replacement": "[ORGANIZACION]"}
+  ]
+}
