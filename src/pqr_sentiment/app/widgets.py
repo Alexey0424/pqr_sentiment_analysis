@@ -71,27 +71,31 @@ class ProbabilityRow(ctk.CTkFrame):
 
 
 class ChartHost(ctk.CTkFrame):
-    """Embeds a matplotlib figure and disposes of it cleanly."""
+    """Embeds a matplotlib figure and disposes of it cleanly.
+
+    The attribute is deliberately not called ``_canvas``: CTkFrame owns an
+    internal ``_canvas`` and shadowing it breaks the frame's own redraws.
+    """
 
     def __init__(self, master, **kwargs) -> None:
         super().__init__(master, fg_color=theming.SURFACE, corner_radius=12, **kwargs)
-        self._canvas: FigureCanvasTkAgg | None = None
+        self._figure_canvas: FigureCanvasTkAgg | None = None
 
     def show(self, figure: Figure) -> None:
         self.clear()
-        self._canvas = FigureCanvasTkAgg(figure, master=self)
-        self._canvas.draw()
-        widget = self._canvas.get_tk_widget()
+        self._figure_canvas = FigureCanvasTkAgg(figure, master=self)
+        self._figure_canvas.draw()
+        widget = self._figure_canvas.get_tk_widget()
         widget.configure(background=theming.SURFACE, highlightthickness=0)
         widget.pack(fill="both", expand=True, padx=6, pady=6)
 
     def clear(self) -> None:
-        if self._canvas is not None:
+        if self._figure_canvas is not None:
             import matplotlib.pyplot as plt
 
-            widget = self._canvas.get_tk_widget()
-            plt.close(self._canvas.figure)
-            self._canvas = None
+            widget = self._figure_canvas.get_tk_widget()
+            plt.close(self._figure_canvas.figure)
+            self._figure_canvas = None
             widget.destroy()
 
 

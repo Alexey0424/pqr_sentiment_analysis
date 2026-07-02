@@ -44,9 +44,8 @@ def test_volume_by_category(scored):
 
 def test_sentiment_share_by_category(scored):
     fig = plots.sentiment_share_by_category(scored, "pqr_type", "Sentiment by type")
-    legend = fig.axes[0].get_legend()
-    assert legend is not None
-    assert [t.get_text() for t in legend.get_texts()] == ["Negative", "Neutral", "Positive"]
+    assert fig.legends, "legend must be present for a multi series chart"
+    assert [t.get_text() for t in fig.legends[0].get_texts()] == ["Negative", "Neutral", "Positive"]
 
 
 def test_monthly_activity_has_two_panels_one_clock(scored):

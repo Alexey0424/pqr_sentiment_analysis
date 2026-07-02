@@ -32,7 +32,15 @@ solicita solicitan solicito pide piden expone exponen expresa indica indican inf
 comunica comunican reporta reportan menciona refiere requiere dia
 """.split()
 
-SPANISH_STOPWORDS = frozenset(_CORE_STOPWORDS) | frozenset(_DOMAIN_STOPWORDS)
+# Anonymization placeholders lose their brackets during normalization and
+# would otherwise surface as fake high frequency terms.
+_PLACEHOLDER_TOKENS = """
+nombre direccion telefono documento empresa contratista organizacion proyecto placa serie negocio
+""".split()
+
+SPANISH_STOPWORDS = (
+    frozenset(_CORE_STOPWORDS) | frozenset(_DOMAIN_STOPWORDS) | frozenset(_PLACEHOLDER_TOKENS)
+)
 
 _KEEP_ENYE = "̃"  # combining tilde, the mark that turns n into ñ
 
@@ -60,10 +68,12 @@ def top_terms_by_class(
     top_n: int = 12,
     ngram_range: tuple[int, int] = (1, 2),
 ) -> pd.DataFrame:
-    """Highest mean TF IDF terms inside each class of ``class_col``.
+    """Most distinctive TF IDF terms inside each class of ``class_col``.
 
-    The vectorizer is fit on the whole corpus so scores are comparable, then
-    terms are ranked by their mean weight within each class.
+    The vectorizer is fit on the whole corpus so weights are comparable, and
+    each term is scored by contrast: its mean weight inside the class minus
+    its mean weight everywhere else. Corpus wide vocabulary cancels out and
+    what remains is what each class talks about that the others do not.
     """
     texts = df[text_col].fillna("").map(normalize_for_tokens)
     vectorizer = TfidfVectorizer(
@@ -78,12 +88,17 @@ def top_terms_by_class(
     frames = []
     labels = df[class_col].reset_index(drop=True)
     for label in labels.dropna().unique():
-        rows = (labels == label).to_numpy().nonzero()[0]
-        means = matrix[rows].mean(axis=0).A1
-        order = means.argsort()[::-1][:top_n]
+        inside = (labels == label).to_numpy()
+        in_means = matrix[inside.nonzero()[0]].mean(axis=0).A1
+        if (~inside).any():
+            out_means = matrix[(~inside).nonzero()[0]].mean(axis=0).A1
+        else:
+            out_means = 0.0
+        contrast = in_means - out_means
+        order = contrast.argsort()[::-1][:top_n]
         frames.append(
             pd.DataFrame(
-                {"class": label, "term": vocabulary[order], "score": means[order]}
+                {"class": label, "term": vocabulary[order], "score": contrast[order]}
             )
         )
     result = pd.concat(frames, ignore_index=True)
