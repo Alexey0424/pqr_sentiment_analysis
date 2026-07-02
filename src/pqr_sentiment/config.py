@@ -9,6 +9,7 @@ consumer (notebook, app, tests) speaks a single vocabulary.
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -147,6 +148,9 @@ def find_data_file(name: str) -> Path | None:
         Path.cwd() / name,
         Path(__file__).resolve().parents[2] / "data" / name,
     ]
+    bundle_root = getattr(sys, "_MEIPASS", None)
+    if bundle_root:
+        candidates.append(Path(bundle_root) / "data" / name)
     for candidate in candidates:
         if candidate.exists():
             return candidate
