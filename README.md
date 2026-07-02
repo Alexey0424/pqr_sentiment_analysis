@@ -1,4 +1,4 @@
-# PQR Sentiment Analysis
+﻿# PQR Sentiment Analysis
 
 Transformer based sentiment and emotion intelligence on real citizen complaints from a public utility works program, delivered three ways: a reproducible analysis notebook, a tested Python package, and a standalone desktop application.
 
@@ -27,11 +27,11 @@ Three questions drive the analysis:
 
 ## Key findings
 
-: **68 percent of records are negative and not one is positive.** The channel is a pressure valve, so the useful signal is intensity and structure, not a positivity score.
-: **Feeling follows the process, not the place.** Entry route (Cramér's V 0.25) and record type (V 0.21) carry the association: claims read 70 percent negative versus 39 percent for petitions, and the records that reach the utility company directly are 88 percent negative. Geography is flat: municipality V 0.04, nonsignificant.
-: **The formal register hides emotion.** An emotion classifier trained on social media abstains on 92 percent of these bureaucratic narratives, an instructive domain shift result: polarity is the robust signal, not emotion.
-: **A second model exposes why domain match matters.** An independent multilingual review model rubber stamps 93 percent of the corpus at 1 or 2 stars (Cohen kappa 0.13 against the Spanish model), while the Spanish native model is the one that separates calm petitions from angry claims.
-: **Operations context:** median closure takes 9 days, only 38 percent of records close within the regulatory deadline, and negative records are not deprioritized (Kruskal Wallis p = 0.51).
+* **68 percent of records are negative and not one is positive.** The channel is a pressure valve, so the useful signal is intensity and structure, not a positivity score.
+* **Feeling follows the process, not the place.** Entry route (Cramér's V 0.25) and record type (V 0.21) carry the association: claims read 70 percent negative versus 39 percent for petitions, and the records that reach the utility company directly are 88 percent negative. Geography is flat: municipality V 0.04, nonsignificant.
+* **The formal register hides emotion.** An emotion classifier trained on social media abstains on 92 percent of these bureaucratic narratives, an instructive domain shift result: polarity is the robust signal, not emotion.
+* **A second model exposes why domain match matters.** An independent multilingual review model rubber stamps 93 percent of the corpus at 1 or 2 stars (Cohen kappa 0.13 against the Spanish model), while the Spanish native model is the one that separates calm petitions from angry claims.
+* **Operations context:** median closure takes 9 days, only 38 percent of records close within the regulatory deadline, and negative records are not deprioritized (Kruskal Wallis p = 0.51).
 
 ## Analytics gallery
 
@@ -102,9 +102,9 @@ A prebuilt Windows package is attached to the [latest release](https://github.co
 
 The original records contain personal data and the identity of the companies involved, so the published dataset went through a rule based anonymization engine (`pqr_sentiment/anonymize.py`) before entering this repository:
 
-: dropped outright: names, national identity numbers, addresses, phone numbers and two unanalyzed free text columns,
-: masked inside the narratives with typed placeholders: person names to `[NOMBRE]`, phones to `[TELEFONO]`, street addresses to `[DIRECCION]`, identity documents to `[DOCUMENTO]`, vehicle plates to `[PLACA]`, serials to `[SERIE]`, and every corporate identity to `[EMPRESA]`, `[CONTRATISTA]` or `[ORGANIZACION]`,
-: verified by an automated audit: structural PII patterns, every raw name, phone and document value, and the full forbidden term list return zero hits on the published file.
+* dropped outright: names, national identity numbers, addresses, phone numbers and two unanalyzed free text columns,
+* masked inside the narratives with typed placeholders: person names to `[NOMBRE]`, phones to `[TELEFONO]`, street addresses to `[DIRECCION]`, identity documents to `[DOCUMENTO]`, vehicle plates to `[PLACA]`, serials to `[SERIE]`, and every corporate identity to `[EMPRESA]`, `[CONTRATISTA]` or `[ORGANIZACION]`,
+* verified by an automated audit: structural PII patterns, every raw name, phone and document value, and the full forbidden term list return zero hits on the published file.
 
 The real term list stays outside version control; `data/sensitive_terms.example.json` documents its format. Municipality, watershed and neighborhood names are public geography and remain, since the spatial analysis depends on them. The provider behind the program is intentionally not disclosed anywhere in this repository.
 

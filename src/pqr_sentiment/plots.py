@@ -1,14 +1,14 @@
-"""Publication grade chart library.
+﻿"""Publication grade chart library.
 
 Design rules applied consistently across every figure:
 
-: sentiment is a polarity, so it uses a validated diverging pair (red for
+* sentiment is a polarity, so it uses a validated diverging pair (red for
   negative, blue for positive) with a deliberate neutral gray midpoint,
-: nominal magnitude comparisons use one hue, never a color per bar,
-: no dual axes, two measures become stacked small multiples on one clock,
-: solid hairline gridlines, recessive axes, text in ink tokens rather than
+* nominal magnitude comparisons use one hue, never a color per bar,
+* no dual axes, two measures become stacked small multiples on one clock,
+* solid hairline gridlines, recessive axes, text in ink tokens rather than
   series colors, legends whenever two or more series share a plot,
-: light and dark themes are separately tuned steps of the same hues.
+* light and dark themes are separately tuned steps of the same hues.
 """
 
 from __future__ import annotations

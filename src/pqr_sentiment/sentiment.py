@@ -1,13 +1,13 @@
-"""Transformer model wrappers with lazy loading and result caching.
+﻿"""Transformer model wrappers with lazy loading and result caching.
 
 Three models are wrapped behind small classes so the notebook and the
 desktop app never touch raw pipelines:
 
-: ``SentimentModel``: robertuito sentiment for Spanish (pysentimiento),
+* ``SentimentModel``: robertuito sentiment for Spanish (pysentimiento),
   the primary scorer, returning a label plus NEG, NEU, POS probabilities.
-: ``EmotionModel``: robertuito emotion for Spanish (pysentimiento),
+* ``EmotionModel``: robertuito emotion for Spanish (pysentimiento),
   returning the dominant emotion and its probability distribution.
-: ``StarModel``: a multilingual review model (nlptown) that grades text
+* ``StarModel``: a multilingual review model (nlptown) that grades text
   from 1 to 5 stars, used as an independent second opinion. Its stars are
   mapped to the shared NEG, NEU, POS vocabulary for agreement analysis.
 
