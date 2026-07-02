@@ -140,7 +140,10 @@ def _tidy_axis(ax: plt.Axes, grid_axis: str = "x") -> None:
 
 
 def _title(ax: plt.Axes, title: str, subtitle: str | None = None) -> None:
-    ax.set_title(title, loc="left", fontsize=13, fontweight="semibold", color=_ACTIVE.ink, pad=14)
+    ax.set_title(
+        title, loc="left", fontsize=13, fontweight="semibold", color=_ACTIVE.ink,
+        pad=26 if subtitle else 14,
+    )
     if subtitle:
         ax.text(
             0, 1.02, subtitle, transform=ax.transAxes,
@@ -237,10 +240,14 @@ def sentiment_share_by_category(
     ax.set_xlim(0, 1)
     ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
     ax.set_xticklabels(["0%", "25%", "50%", "75%", "100%"])
-    ax.legend(loc="lower left", bbox_to_anchor=(0, 1.04), ncol=3, fontsize=9.5, handlelength=1.2)
+    handles, legend_labels = ax.get_legend_handles_labels()
+    fig.legend(
+        handles, legend_labels, loc="lower left", bbox_to_anchor=(0.02, 0.0),
+        ncol=3, fontsize=9.5, handlelength=1.2, frameon=False,
+    )
     _tidy_axis(ax, grid_axis="")
     _title(ax, title, subtitle)
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.07, 1, 1))
     return fig
 
 
@@ -266,9 +273,10 @@ def monthly_activity(scored: pd.DataFrame, title: str, subtitle: str | None = No
     ax_volume.set_ylabel("Records per month", fontsize=10)
     _title(ax_volume, title, subtitle)
 
-    known = monthly.dropna(subset=["negative_share"])
+    # Months with no records stay as gaps in the line: bridging them would
+    # invent a trend where there was silence.
     ax_share.plot(
-        known.index, known["negative_share"] * 100,
+        monthly.index, monthly["negative_share"] * 100,
         color=_ACTIVE.sentiment["NEG"], linewidth=2, solid_joinstyle="round",
         marker="o", markersize=5.5, markerfacecolor=_ACTIVE.sentiment["NEG"],
         markeredgecolor=_ACTIVE.surface, markeredgewidth=1.6,
