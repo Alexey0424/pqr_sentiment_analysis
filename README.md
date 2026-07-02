@@ -2,9 +2,16 @@
 
 Transformer based sentiment and emotion intelligence on real citizen complaints from a public utility works program, delivered three ways: a reproducible analysis notebook, a tested Python package, and a standalone desktop application.
 
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
 [![tests](https://github.com/Alexey0424/pqr_sentiment_analysis/actions/workflows/tests.yml/badge.svg)](https://github.com/Alexey0424/pqr_sentiment_analysis/actions/workflows/tests.yml)
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?logo=pytorch&logoColor=white)
+![Transformers](https://img.shields.io/badge/Hugging%20Face-Transformers-FFD21E?logo=huggingface&logoColor=black)
+![Model](https://img.shields.io/badge/model-RoBERTuito%2C%20Spanish%20BERT-6f42c1)
+![pandas](https://img.shields.io/badge/pandas-2.x-150458?logo=pandas&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-stats%20%26%20TF%20IDF-F7931E?logo=scikitlearn&logoColor=white)
+![CustomTkinter](https://img.shields.io/badge/CustomTkinter-desktop%20studio-2a78d6)
+![Windows](https://img.shields.io/badge/Windows-standalone%20build-0078D6)
+![License](https://img.shields.io/badge/license-MIT-3DA639)
 
 ![PQR Sentiment Studio dashboard](reports/screenshots/studio_dashboard.png)
 
