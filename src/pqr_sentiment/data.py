@@ -73,11 +73,31 @@ def parse_flexible_dates(series: pd.Series) -> pd.Series:
         remaining = text_mask & parsed.isna()
         if remaining.any():
             text = values[remaining].astype(str).str.strip(" '\"\t")
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore", UserWarning)
-                parsed.loc[remaining] = pd.to_datetime(text, dayfirst=True, errors="coerce")
+            parsed.loc[remaining] = _parse_dayfirst_lenient(text)
 
     return parsed.dt.normalize()
+
+
+def _parse_dayfirst_lenient(text: pd.Series) -> pd.Series:
+    """Day first parsing that never raises.
+
+    Truncated years like ``06/05/201`` make some pandas versions raise
+    OutOfBoundsDatetime straight through ``errors="coerce"``, so the
+    vectorized attempt falls back to per value parsing where any failure
+    simply becomes NaT.
+    """
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", UserWarning)
+        try:
+            return pd.to_datetime(text, dayfirst=True, errors="coerce")
+        except Exception:
+            values = []
+            for value in text:
+                try:
+                    values.append(pd.to_datetime(value, dayfirst=True, errors="coerce"))
+                except Exception:
+                    values.append(pd.NaT)
+            return pd.Series(values, index=text.index, dtype="datetime64[ns]")
 
 
 @dataclass
