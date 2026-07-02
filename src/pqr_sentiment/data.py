@@ -133,7 +133,8 @@ class CleaningReport:
 def _strip_whitespace(df: pd.DataFrame) -> tuple[pd.DataFrame, int]:
     changed = 0
     for column in df.columns:
-        if df[column].dtype == object:
+        # Text columns are object dtype on pandas 2 and str dtype on pandas 3.
+        if pd.api.types.is_object_dtype(df[column]) or pd.api.types.is_string_dtype(df[column]):
             stripped = df[column].map(lambda v: " ".join(v.split()) if isinstance(v, str) else v)
             changed += int((stripped != df[column]).fillna(False).sum())
             df[column] = stripped
