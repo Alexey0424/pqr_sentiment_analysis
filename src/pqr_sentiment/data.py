@@ -65,39 +65,50 @@ def parse_flexible_dates(series: pd.Series) -> pd.Series:
     text_mask = ~serial_mask & values.notna()
     if text_mask.any():
         text = values[text_mask].astype(str).str.strip(" '\"\t")
-        parsed.loc[text_mask] = pd.to_datetime(text, format="ISO8601", errors="coerce")
+        parsed.loc[text_mask] = _parse_text_stage(text, {"format": "ISO8601"})
         remaining = text_mask & parsed.isna()
         if remaining.any():
             text = values[remaining].astype(str).str.strip(" '\"\t")
-            parsed.loc[remaining] = pd.to_datetime(text, format="%d/%m/%Y", errors="coerce")
+            parsed.loc[remaining] = _parse_text_stage(text, {"format": "%d/%m/%Y"})
         remaining = text_mask & parsed.isna()
         if remaining.any():
             text = values[remaining].astype(str).str.strip(" '\"\t")
-            parsed.loc[remaining] = _parse_dayfirst_lenient(text)
+            parsed.loc[remaining] = _parse_text_stage(text, {"dayfirst": True})
 
     return parsed.dt.normalize()
 
 
-def _parse_dayfirst_lenient(text: pd.Series) -> pd.Series:
-    """Day first parsing that never raises.
+# Values outside this window are source system garbage (a year truncated to
+# "201" parses as the third century on lenient parsers).
+_PLAUSIBLE_MIN = pd.Timestamp("1950-01-01")
+_PLAUSIBLE_MAX = pd.Timestamp("2100-12-31")
 
-    Truncated years like ``06/05/201`` make some pandas versions raise
-    OutOfBoundsDatetime straight through ``errors="coerce"``, so the
-    vectorized attempt falls back to per value parsing where any failure
-    simply becomes NaT.
+
+def _parse_text_stage(text: pd.Series, kwargs: dict) -> pd.Series:
+    """Parse one text stage without ever raising.
+
+    Depending on the pandas version, a value like ``06/05/201`` either
+    coerces to NaT, raises OutOfBoundsDatetime, or parses successfully into
+    a lower resolution timestamp that later explodes when assigned into a
+    nanosecond column. Parsing per stage and discarding anything outside
+    the plausible operational window neutralizes all three behaviors.
     """
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", UserWarning)
         try:
-            return pd.to_datetime(text, dayfirst=True, errors="coerce")
+            result = pd.to_datetime(text, errors="coerce", **kwargs)
         except Exception:
-            values = []
+            parsed_values = []
             for value in text:
                 try:
-                    values.append(pd.to_datetime(value, dayfirst=True, errors="coerce"))
+                    parsed_values.append(pd.to_datetime(value, errors="coerce", **kwargs))
                 except Exception:
-                    values.append(pd.NaT)
-            return pd.Series(values, index=text.index, dtype="datetime64[ns]")
+                    parsed_values.append(pd.NaT)
+            result = pd.Series(parsed_values, index=text.index)
+    result = pd.Series(result, index=text.index)
+    out_of_window = result.notna() & ((result < _PLAUSIBLE_MIN) | (result > _PLAUSIBLE_MAX))
+    result[out_of_window] = pd.NaT
+    return result.astype("datetime64[ns]")
 
 
 @dataclass
