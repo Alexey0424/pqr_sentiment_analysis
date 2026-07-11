@@ -12,6 +12,9 @@ Transformer based sentiment and emotion intelligence on real citizen complaints 
 ![CustomTkinter](https://img.shields.io/badge/CustomTkinter-desktop%20studio-2a78d6)
 ![Windows](https://img.shields.io/badge/Windows-standalone%20build-0078D6)
 ![License](https://img.shields.io/badge/license-MIT-3DA639)
+<p align="center">
+  <img src="assets/hero.jpg" alt="A stack of citizen complaint letters rides a conveyor through a redaction press to a reading robot whose sentiment gauge points deep into the red, beside an open trench of aqueduct pipes" width="100%">
+</p>
 
 ![PQR Sentiment Studio dashboard](reports/screenshots/studio_dashboard.png)
 
